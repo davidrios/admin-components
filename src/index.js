@@ -1,4 +1,6 @@
 // @flow
-let lol: string = 'test'
+import TextInput from './components/text-input'
 
-console.log(lol)
+export {
+  TextInput
+}
