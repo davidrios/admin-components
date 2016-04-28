@@ -41,4 +41,8 @@ if (env === 'production') {
   )
 }
 
+if (env === 'development') {
+  config.devtool = 'inline-source-map'
+}
+
 module.exports = config
