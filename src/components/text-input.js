@@ -1,42 +1,18 @@
 import React from 'react'
 
+import BaseTextInput from './base-text-input'
+
 export default class TextInput extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      hasError: props.hasError,
-      value: props.value,
-      updateTimeout: null
+      hasError: props.hasError
     }
   }
 
-  handleChange(ev) {
-    if (this.state.updateTimeout != null) {
-      clearTimeout(this.state.updateTimeout)
-    }
-
-    let newState = { value: ev.target.value, updateTimeout: null }
-
-    if (this.props.updateDelay == 0) {
-      this.setState(newState)
-
-      if (this.props.onUpdate != null) {
-        this.props.onUpdate(newState.value)
-      }
-
-      return
-    }
-
-    if (this.props.onUpdate != null) {
-      newState.updateTimeout = setTimeout(() => this.props.onUpdate(newState.value), this.props.updateDelay)
-    }
-
-    this.setState(newState)
-  }
-
-  componentWillUnmount() {
-    if (this.state.updateTimeout != null) {
-      clearTimeout(this.state.updateTimeout)
+  handleUpdateInstant(val) {
+    if (this.props.validator != null) {
+      this.setState({ hasError: !this.props.validator(val) })
     }
   }
 
@@ -44,7 +20,8 @@ export default class TextInput extends React.Component {
     return (
       <div className={this.props.className + (this.state.hasError ? ' has-danger' : '')}>
         <label htmlFor={this.props.inputId}>{this.props.label}</label>
-        <input id={this.props.inputId} type="text" value={this.state.value} placeholder={this.props.placeholder} onChange={ev => this.handleChange(ev)} />
+        <BaseTextInput inputId={this.props.inputId} value={this.props.value} updateDelay={this.props.updateDelay}
+                       onUpdate={this.props.onUpdate} onUpdateInstant={val => this.handleUpdateInstant(val)} />
         {this.props.errorText.length ? <small>{this.props.errorText}</small> : null}
         {this.props.helpText.length ? <small>{this.props.helpText}</small> : null}
       </div>
@@ -53,12 +30,10 @@ export default class TextInput extends React.Component {
 }
 
 TextInput.defaultProps = {
-  value: '',
   className: '',
   helpText: '',
   errorText: '',
-  hasError: false,
-  updateDelay: 200
+  hasError: false
 }
 
 TextInput.propTypes = {
@@ -66,9 +41,7 @@ TextInput.propTypes = {
   hasError: React.PropTypes.bool,
   inputId: React.PropTypes.string,
   label: React.PropTypes.string,
-  value: React.PropTypes.string,
   errorText: React.PropTypes.string,
   helpText: React.PropTypes.string,
-  onUpdate: React.PropTypes.func,
-  updateDelay: React.PropTypes.number
+  validator: React.PropTypes.func
 }

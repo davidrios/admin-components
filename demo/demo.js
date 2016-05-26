@@ -13,3 +13,13 @@ ReactDOM.render(
     }
   }),
   document.getElementById('textinput1'));
+
+ReactDOM.render(
+  React.createElement(TextInput, {
+    inputId: 'textinput2field',
+    label: 'input2',
+    placeholder: 'input2',
+    helpText: 'validated only numbers',
+    validator: function(value) { return value.match(/^\d*$/); }
+  }),
+  document.getElementById('textinput2'));
