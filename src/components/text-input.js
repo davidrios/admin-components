@@ -20,7 +20,7 @@ export default class TextInput extends React.Component {
     return (
       <div className={this.props.className + (this.state.hasError ? ' has-danger' : '')}>
         <label htmlFor={this.props.inputId}>{this.props.label}</label>
-        <BaseTextInput inputId={this.props.inputId} value={this.props.value} updateDelay={this.props.updateDelay}
+        <BaseTextInput inputId={this.props.inputId} value={this.props.value} placeholder={this.props.placeholder} updateDelay={this.props.updateDelay}
                        onUpdate={this.props.onUpdate} onUpdateInstant={val => this.handleUpdateInstant(val)} />
         {this.props.errorText.length ? <small>{this.props.errorText}</small> : null}
         {this.props.helpText.length ? <small>{this.props.helpText}</small> : null}

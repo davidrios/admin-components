@@ -62,6 +62,7 @@ BaseTextInput.defaultProps = {
 BaseTextInput.propTypes = {
   inputId: React.PropTypes.string,
   value: React.PropTypes.string,
+  placeholder: React.PropTypes.string,
   onUpdate: React.PropTypes.func,
   onUpdateInstant: React.PropTypes.func,
   updateDelay: React.PropTypes.number
