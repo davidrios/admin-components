@@ -1,6 +1,7 @@
 'use strict';
 
 var TextInput = window['admin-components'].TextInput;
+var TagsInput = window['admin-components'].TagsInput;
 
 ReactDOM.render(
   React.createElement(TextInput, {
@@ -23,3 +24,12 @@ ReactDOM.render(
     validator: function(value) { return value.match(/^\d*$/); }
   }),
   document.getElementById('textinput2'));
+
+ReactDOM.render(
+  React.createElement(TagsInput, {
+    label: 'tags input 1',
+    inputPlaceholder: 'tag name',
+    value: ['abc', 'bcd'],
+    allowDuplicates: true
+  }),
+  document.getElementById('tagsinput1'));
