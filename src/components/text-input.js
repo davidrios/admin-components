@@ -1,47 +1,90 @@
 import React from 'react'
+import BaseFormInput from './base'
+import { makePropsSubset } from '../utils'
 
-import BaseTextInput from './base-text-input'
 
-export default class TextInput extends React.Component {
+export class BaseTextInput extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      hasError: props.hasError
+      value: props.value,
+      updateTimeout: null
     }
   }
 
-  handleUpdateInstant(val) {
-    if (this.props.validator != null) {
-      this.setState({ hasError: !this.props.validator(val) })
+  componentWillUnmount() {
+    if (this.state.updateTimeout != null) {
+      clearTimeout(this.state.updateTimeout)
     }
+  }
+
+  changeValue(val) {
+    if (this.state.updateTimeout != null) {
+      clearTimeout(this.state.updateTimeout)
+    }
+
+    let newState = { value: val, updateTimeout: null }
+
+    if (this.props.updateDelay == 0) {
+      this.setState(newState)
+
+      if (this.props.onUpdate != null) {
+        this.props.onUpdate(newState.value)
+      }
+
+      if (this.props.onUpdateInstant != null) {
+        this.props.onUpdateInstant(newState.value)
+      }
+
+      return
+    }
+
+    if (this.props.onUpdate != null) {
+      newState.updateTimeout = setTimeout(() => this.props.onUpdate(newState.value), this.props.updateDelay)
+    }
+
+    this.setState(newState)
+
+    if (this.props.onUpdateInstant != null) {
+      this.props.onUpdateInstant(newState.value)
+    }
+  }
+
+  focus() {
+    this.inputRef.focus()
   }
 
   render() {
     return (
-      <div className={this.props.className + (this.state.hasError ? ' has-danger' : '')}>
-        <label htmlFor={this.props.inputId}>{this.props.label}</label>
-        <BaseTextInput inputId={this.props.inputId} value={this.props.value} placeholder={this.props.placeholder} updateDelay={this.props.updateDelay}
-                       onUpdate={this.props.onUpdate} onUpdateInstant={val => this.handleUpdateInstant(val)} />
-        {this.props.errorText.length ? <small>{this.props.errorText}</small> : null}
-        {this.props.helpText.length ? <small>{this.props.helpText}</small> : null}
-      </div>
+      <input ref={el => this.inputRef = el}
+             type="text"
+             value={this.state.value}
+             placeholder={this.props.placeholder}
+             onChange={ev => this.changeValue(ev.target.value)} />
     )
   }
 }
 
-TextInput.defaultProps = {
-  className: '',
-  helpText: '',
-  errorText: '',
-  hasError: false
+BaseTextInput.defaultProps = {
+  value: '',
+  updateDelay: 200
 }
 
-TextInput.propTypes = {
-  className: React.PropTypes.string,
-  hasError: React.PropTypes.bool,
-  inputId: React.PropTypes.string,
-  label: React.PropTypes.string,
-  errorText: React.PropTypes.string,
-  helpText: React.PropTypes.string,
-  validator: React.PropTypes.func
+BaseTextInput.propTypes = {
+  value: React.PropTypes.string,
+  placeholder: React.PropTypes.string,
+  updateDelay: React.PropTypes.number,
+  onUpdate: React.PropTypes.func,
+  onUpdateInstant: React.PropTypes.func
+}
+
+
+export default class TextInput extends React.Component {
+  render() {
+    return (
+      <BaseFormInput {...makePropsSubset(this.props, BaseFormInput.propTypes)}>
+        <BaseTextInput {...makePropsSubset(this.props, [ 'value', 'placeholder', 'updateDelay', 'onUpdate' ])} />
+      </BaseFormInput>
+    )
+  }
 }
