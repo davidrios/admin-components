@@ -2,6 +2,7 @@
 
 var TextInput = window['admin-components'].TextInput;
 var TagsInput = window['admin-components'].TagsInput;
+var ModifiersInput = window['admin-components'].ModifiersInput;
 
 ReactDOM.render(
   React.createElement(TextInput, {
@@ -33,3 +34,17 @@ ReactDOM.render(
     allowDuplicates: true
   }),
   document.getElementById('tagsinput1'));
+
+ReactDOM.render(
+  React.createElement(ModifiersInput, {
+    label: 'modifiers input 1',
+    namePlaceholder: 'name',
+    valuePlaceholder: 'value',
+    value: [
+      {name: 'lol', tags: ['a', 'b', 'c']}
+    ],
+    onUpdate: function(val) {
+      console.log(val)
+    }
+  }),
+  document.getElementById('modifiersinput1'));

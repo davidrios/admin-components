@@ -54,13 +54,27 @@ export class BaseTextInput extends React.Component {
     this.inputRef.focus()
   }
 
+  handleInputFocus(ev) {
+    if (this.props.onFocus != null) {
+      this.props.onFocus(ev)
+    }
+  }
+
+  handleInputBlur(ev) {
+    if (this.props.onBlur != null) {
+      this.props.onBlur(ev)
+    }
+  }
+
   render() {
     return (
       <input ref={el => this.inputRef = el}
              type="text"
              value={this.state.value}
              placeholder={this.props.placeholder}
-             onChange={ev => this.changeValue(ev.target.value)} />
+             onChange={ev => this.changeValue(ev.target.value)}
+             onFocus={ev => this.handleInputFocus(ev)}
+             onBlur={ev => this.handleInputBlur(ev)} />
     )
   }
 }
