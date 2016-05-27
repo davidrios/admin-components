@@ -1,6 +1,7 @@
 # React Admin Components
 
 Some generic admin components in ReactJS using my [admin template](https://github.com/davidrios/Admin-Template) css.
+[Check out the demo](https://davidrios.github.io/admin-components).
 
 ## Dev
 
