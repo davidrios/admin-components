@@ -15,10 +15,7 @@ function getTextWidth(text, font) {
 export class BaseTagsInput extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {
-      value: props.value.slice(),
-      inputValue: props.inputValue
-    }
+    this.state = { inputValue: props.inputValue }
   }
 
   componentDidMount() {
@@ -26,34 +23,15 @@ export class BaseTagsInput extends React.Component {
   }
 
   addTag(val) {
-    if (!this.props.allowDuplicates && this.state.value.indexOf(val) != -1) {
+    if (!this.props.allowDuplicates && this.props.value.indexOf(val) != -1) {
       this.setState({ inputValue: '' })
       this.updateEditingSize('')
       return
     }
 
-    let newValue = this.state.value.slice()
-    newValue.push(val)
-    this.setState({
-      value: newValue,
-      inputValue: ''
-    })
-
+    this.setState({ inputValue: '' })
     this.updateEditingSize('')
-
-    if (this.props.onUpdate != null) {
-      this.props.onUpdate(newValue.slice())
-    }
-  }
-
-  deleteTag(index) {
-    let newValue = this.state.value.slice()
-    newValue.splice(index, 1)
-    this.setState({ value: newValue })
-
-    if (this.props.onUpdate != null) {
-      this.props.onUpdate(newValue.slice())
-    }
+    this.onAddTag(val)
   }
 
   updateEditingSize(text) {
@@ -86,7 +64,7 @@ export class BaseTagsInput extends React.Component {
       this.addTag(ev.target.value)
     }
     else if (ev.key === 'Backspace' && !ev.target.value) {
-      this.deleteTag(-1)
+      this.props.onDeleteTag(-1)
     }
   }
 
@@ -103,7 +81,7 @@ export class BaseTagsInput extends React.Component {
   }
 
   render() {
-    let tagsElements = this.state.value.map((val, index) => <li key={index}>{val}<i className="fa fa-close" onClick={() => this.deleteTag(index)}></i></li>)
+    let tagsElements = this.props.value.map((val, index) => <li key={index}>{val}<i className="fa fa-close" onClick={() => this.props.onDeleteTag(index)}></i></li>)
 
     return (
       <ul className={this.props.className + ' tags-input nospaces'}
@@ -137,7 +115,8 @@ BaseTagsInput.propTypes = {
   inputPlaceholder: React.PropTypes.string,
   allowDuplicates: React.PropTypes.bool,
   className: React.PropTypes.string,
-  onUpdate: React.PropTypes.func,
+  onAddTag: React.PropTypes.func.isRequired,
+  onDeleteTag: React.PropTypes.func.isRequired,
   onFocus: React.PropTypes.func,
   onBlur: React.PropTypes.func
 }
@@ -161,7 +140,7 @@ export default class TagsInput extends React.Component {
     return (
       <BaseFormInput {...makePropsSubset(this.props, BaseFormInput.propTypes)}>
         <BaseTagsInput className={(this.state.active ? ' active' : '')}
-                       {...makePropsSubset(this.props, [ 'value', 'inputValue', 'inputPlaceholder', 'allowDuplicates', 'onUpdate' ])}
+                       {...makePropsSubset(this.props, [ 'value', 'inputValue', 'inputPlaceholder', 'allowDuplicates', 'onAddTag', 'onDeleteTag' ])}
                        onFocus={ev => this.handleTagsInputFocus(ev)}
                        onBlur={ev => this.handleTagsInputBlur(ev)} />
       </BaseFormInput>
