@@ -14,7 +14,9 @@
     "build:umd": "NODE_ENV=development webpack src/index.js dist/admin-components.js",
     "build:umd:min": "NODE_ENV=production webpack src/index.js dist/admin-components.min.js",
     "prepublish": "npm run clean && npm run build:commonjs",
-    "flow": "flow; test $? -eq 0 -o $? -eq 2"
+    "flow": "flow; test $? -eq 0 -o $? -eq 2",
+    "demo:build": "webpack --config demo/webpack.config.js demo/demo.es6",
+    "demo:build:min": "NODE_ENV=production webpack --config demo/webpack.config.js demo/demo.es6"
   },
   "repository": {
     "type": "git",
@@ -38,7 +40,6 @@
     "eslint-plugin-flowtype": "^2.2.7",
     "eslint-plugin-react": "^5.0.1",
     "flow-bin": "^0.23.1",
-    "react-dom": "^15.0.1",
     "webpack": "^1.13.0"
   },
   "peerDependencies": {
