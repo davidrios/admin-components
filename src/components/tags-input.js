@@ -31,7 +31,7 @@ export class BaseTagsInput extends React.Component {
 
     this.setState({ inputValue: '' })
     this.updateEditingSize('')
-    this.onAddTag(val)
+    this.props.onAddTag(val)
   }
 
   updateEditingSize(text) {
@@ -64,7 +64,7 @@ export class BaseTagsInput extends React.Component {
       this.addTag(ev.target.value)
     }
     else if (ev.key === 'Backspace' && !ev.target.value) {
-      this.props.onDeleteTag(-1)
+      this.props.onRemoveTag(-1)
     }
   }
 
@@ -81,7 +81,7 @@ export class BaseTagsInput extends React.Component {
   }
 
   render() {
-    let tagsElements = this.props.value.map((val, index) => <li key={index}>{val}<i className="fa fa-close" onClick={() => this.props.onDeleteTag(index)}></i></li>)
+    let tagsElements = this.props.value.map((val, index) => <li key={index}>{val}<i className="fa fa-close" onClick={() => this.props.onRemoveTag(index)}></i></li>)
 
     return (
       <ul className={this.props.className + ' tags-input nospaces'}
@@ -116,7 +116,7 @@ BaseTagsInput.propTypes = {
   allowDuplicates: React.PropTypes.bool,
   className: React.PropTypes.string,
   onAddTag: React.PropTypes.func.isRequired,
-  onDeleteTag: React.PropTypes.func.isRequired,
+  onRemoveTag: React.PropTypes.func.isRequired,
   onFocus: React.PropTypes.func,
   onBlur: React.PropTypes.func
 }
@@ -139,11 +139,15 @@ export default class TagsInput extends React.Component {
   render() {
     return (
       <BaseFormInput {...makePropsSubset(this.props, BaseFormInput.propTypes)}>
-        <BaseTagsInput className={(this.state.active ? ' active' : '')}
-                       {...makePropsSubset(this.props, [ 'value', 'inputValue', 'inputPlaceholder', 'allowDuplicates', 'onAddTag', 'onDeleteTag' ])}
+        <BaseTagsInput {...makePropsSubset(this.props, BaseTagsInput.propTypes, [ 'className', 'onFocus', 'onBlur' ])}
+                       className={this.props.className + (this.state.active ? ' active' : '')}
                        onFocus={ev => this.handleTagsInputFocus(ev)}
                        onBlur={ev => this.handleTagsInputBlur(ev)} />
       </BaseFormInput>
     )
   }
+}
+
+TagsInput.defaultProps = {
+  className: ''
 }
