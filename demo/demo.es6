@@ -3,7 +3,8 @@ import { render } from 'react-dom'
 import { Router, Route, Link, browserHistory } from 'react-router'
 import { TextInput,
          TagsInput,
-         ModifiersInput } from 'admin-components'
+         ModifiersInput,
+         utils } from 'admin-components'
 
 
 class App extends React.Component {
@@ -68,12 +69,98 @@ class DemoTextInput extends React.Component {
 }
 
 
+class StatefulTagsInput extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { value: this.props.value || [] }
+  }
+
+  addTag(val) {
+    let newValue = this.state.value.slice()
+    newValue.push(val)
+    this.setState({ value: newValue })
+  }
+
+  removeTag(val) {
+    let newValue = this.state.value.slice()
+    newValue.splice(val, 1)
+    this.setState({ value: newValue })
+  }
+
+  render() {
+    return (
+      <TagsInput {...utils.makePropsSubset(this.props, [ 'label', 'value', 'inputPlaceholder', 'allowDuplicates', 'helpText' ])}
+                 value={this.state.value}
+                 onAddTag={val => this.addTag(val)}
+                 onRemoveTag={val => this.removeTag(val)} />
+    )
+  }
+}
+
+
 class DemoTagsInput extends React.Component {
   render() {
     return (
       <BaseFormDemo title="Tags Input">
-        <TagsInput label="tags input 1" inputPlaceholder="tag name" value={[ 'abc', 'bcd' ]} allowDuplicates={true} />
+        <StatefulTagsInput label="tags input 1" inputPlaceholder="tag name" value={[ 'abc', 'bcd' ]} allowDuplicates={true} />
+        <StatefulTagsInput label="tags input 2" inputPlaceholder="new tag" helpText="no duplicates" allowDuplicates={false} />
       </BaseFormDemo>
+    )
+  }
+}
+
+class StatefulModifiersInput extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { value: this.props.value || [] }
+  }
+
+  addModifier() {
+    let newValue = this.state.value.slice()
+    newValue.push({ name: '', tags: [] })
+    this.setState({ value: newValue })
+  }
+
+  removeModifier(idx) {
+    let newValue = this.state.value.slice()
+    newValue.splice(idx, 1)
+    this.setState({ value: newValue })
+    this.forceUpdate()
+  }
+
+  updateName(val, idx) {
+    let newValue = this.state.value.slice()
+    let mod = Object.assign({}, newValue[idx])
+    mod.name = val
+    newValue[idx] = mod
+    this.setState({ value: newValue })
+  }
+
+  addTag(val, idx) {
+    let newValue = this.state.value.slice()
+    let mod = Object.assign({}, newValue[idx])
+    mod.tags.push(val)
+    newValue[idx] = mod
+    this.setState({ value: newValue })
+  }
+
+  removeTag(val, idx) {
+    let newValue = this.state.value.slice()
+    let mod = Object.assign({}, newValue[idx])
+    mod.tags.slice(val, 1)
+    newValue[idx] = mod
+    this.setState({ value: newValue })
+  }
+
+  render() {
+    return (
+      <ModifiersInput {...utils.makePropsSubset(this.props, [ 'label', 'value', 'namePlaceholder', 'valuePlaceholder', 'allowTagDuplicates', 'helpText' ])}
+                      value={this.state.value}
+                      onClickAdd={() => this.addModifier()}
+                      onClickRemove={(idx) => this.removeModifier(idx)}
+                      onNameUpdate={(val, idx) => this.updateName(val, idx)}
+                      onAddTag={(val, idx) => this.addTag(val, idx)}
+                      onRemoveTag={(val, idx) => this.removeTag(val, idx)} />
     )
   }
 }
@@ -81,13 +168,19 @@ class DemoTagsInput extends React.Component {
 
 class DemoModifiersInput extends React.Component {
   render() {
-    let value = [
-      { name: 'lol', tags: [ 'a', 'b', 'c' ] }
-    ]
-
     return (
       <BaseFormDemo title="Modifiers Input">
-        <ModifiersInput label="modifiers input 1" namePlaceholder="name" valuePlaceholder="value" value={value} />
+        <StatefulModifiersInput value={[ { name: 'lol', tags: [ 'a', 'b', 'c' ] } ]}
+                                label="modifiers input 1"
+                                namePlaceholder="name"
+                                valuePlaceholder="value"
+                                helpText="no tag duplicates" />
+
+        <StatefulModifiersInput label="modifiers input 2"
+                                namePlaceholder="name2"
+                                valuePlaceholder="value2"
+                                allowTagDuplicates={true}
+                                helpText="allow tag duplicates" />
       </BaseFormDemo>
     )
   }
