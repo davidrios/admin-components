@@ -19,33 +19,6 @@ export class BaseModifiersInputItem extends React.Component {
     this.setState({ active: false })
   }
 
-  handleChildUpdate(component, value) {
-    let newValue = {}
-
-    if (component === 'name') {
-      newValue = {
-        name: value,
-        tags: this.tagsInputRef.state.value.slice()
-      }
-    }
-    else if (component === 'tags') {
-      newValue = {
-        name: this.nameInputRef.state.value,
-        tags: value
-      }
-    }
-
-    if (this.props.onUpdate != null) {
-      this.props.onUpdate(newValue)
-    }
-  }
-
-  handleClickRemove(ev) {
-    if (this.props.onClickRemove != null) {
-      this.props.onClickRemove(ev)
-    }
-  }
-
   render() {
     return (
       <li className={(this.state.active ? ' active' : '')}>
@@ -54,16 +27,16 @@ export class BaseModifiersInputItem extends React.Component {
                        placeholder={this.props.namePlaceholder}
                        onFocus={ev => this.handleChildFocus(ev)}
                        onBlur={ev => this.handleChildBlur(ev)}
-                       onUpdate={(val) => this.handleChildUpdate('name', val)} />
+                       onUpdate={(val) => this.props.onNameUpdate(val)} />
 
-        {this.props.canBeRemoved ? <i className="fa fa-close" onClick={ev => this.handleClickRemove(ev)}></i> : null}
+        {this.props.canBeRemoved ? <i className="fa fa-close" onClick={ev => this.props.onClickRemove(ev)}></i> : null}
 
         <BaseTagsInput ref={component => this.tagsInputRef = component}
                        value={this.props.value.tags}
                        inputPlaceholder={this.props.valuePlaceholder}
                        onFocus={ev => this.handleChildFocus(ev)}
                        onBlur={ev => this.handleChildBlur(ev)}
-                       onUpdate={(val) => this.handleChildUpdate('tags', val)} />
+                       {...makePropsSubset(this.props, [ 'onAddTag', 'onRemoveTag', 'allowDuplicates' ])} />
       </li>
     )
   }
@@ -78,42 +51,37 @@ BaseModifiersInputItem.defaultProps = {
 
 BaseModifiersInputItem.propTypes = {
   value: React.PropTypes.shape({
-    name: React.PropTypes.any,
-    tags: React.PropTypes.any
+    name: BaseTextInput.propTypes.value,
+    tags: BaseTagsInput.propTypes.value
   }),
-  namePlaceholder: React.PropTypes.string,
-  valuePlaceholder: React.PropTypes.string,
+  namePlaceholder: BaseTextInput.propTypes.placeholder,
+  valuePlaceholder: BaseTagsInput.propTypes.inputPlaceholder,
   canBeRemoved: React.PropTypes.bool,
-  onUpdate: React.PropTypes.func
+  onNameUpdate: React.PropTypes.func.isRequired,
+  onClickRemove: React.PropTypes.func.isRequired
 }
 
 
 export class BaseModifiersInput extends React.Component {
-  constructor(props) {
-    super(props)
-    this.state = { modifierCount: props.value.length }
-  }
-
-  handleNewClick(ev) {
+  handleClickAdd(ev) {
     ev.preventDefault()
-    this.setState({ modifierCount: this.state.modifierCount + 1 })
-  }
-
-  handleClickRemove(index) {
-    console.log(index)
+    this.props.onClickAdd(ev)
   }
 
   render() {
-    const range = Array.from(new Array(this.state.modifierCount), (x, i) => i)
-    let modifiers = range.map(index =>
+    let modifiers = this.props.value.map((value, index) =>
       <BaseModifiersInputItem {...makePropsSubset(this.props, [ 'namePlaceholder', 'valuePlaceholder' ])}
                               key={index}
                               value={this.props.value[index]}
-                              onClickRemove={() => this.handleClickRemove(index)} />)
+                              allowDuplicates={this.props.allowTagDuplicates}
+                              onNameUpdate={(val) => this.props.onNameUpdate(val, index)}
+                              onAddTag={(val) => this.props.onAddTag(val, index)}
+                              onRemoveTag={(val) => this.props.onRemoveTag(val, index)}
+                              onClickRemove={() => this.props.onClickRemove(index)} />)
 
     return (
       <ul className="modifiers-input">
-        <li><button onClick={ev => this.handleNewClick(ev)}>New</button></li>
+        <li><button onClick={ev => this.handleClickAdd(ev)}>New</button></li>
         {modifiers}
       </ul>
     )
@@ -121,12 +89,18 @@ export class BaseModifiersInput extends React.Component {
 }
 
 BaseModifiersInput.defaultProps = {
-  value: []
+  value: [],
+  allowTagDuplicates: false
 }
 
 BaseModifiersInput.propTypes = {
   value: React.PropTypes.array,
-  onUpdate: React.PropTypes.func
+  allowTagDuplicates: React.PropTypes.bool,
+  onNameUpdate: React.PropTypes.func.isRequired,
+  onAddTag: React.PropTypes.func.isRequired,
+  onRemoveTag: React.PropTypes.func.isRequired,
+  onClickAdd: React.PropTypes.func.isRequired,
+  onClickRemove: React.PropTypes.func.isRequired
 }
 
 
@@ -134,7 +108,7 @@ export default class ModifiersInput extends React.Component {
   render() {
     return (
       <BaseFormInput {...makePropsSubset(this.props, BaseFormInput.propTypes)}>
-        <BaseModifiersInput {...makePropsSubset(this.props, [ 'value', 'namePlaceholder', 'valuePlaceholder' ])} />
+        <BaseModifiersInput {...makePropsSubset(this.props, BaseModifiersInput.propTypes)} />
       </BaseFormInput>
     )
   }
