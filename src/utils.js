@@ -1,10 +1,12 @@
-export const makePropsSubset = function (props, subSetKeys) {
-  if (!Array.isArray(subSetKeys)) {
-    subSetKeys = Object.keys(subSetKeys)
+export const makePropsSubset = function (props, subset, exclude) {
+  if (!Array.isArray(subset)) {
+    subset = Object.keys(subset)
   }
 
-  return subSetKeys.reduce((obj, key) => {
-    obj[key] = props[key]
+  return subset.reduce((obj, key) => {
+    if (exclude == null || exclude.indexOf(key) == -1) {
+      obj[key] = props[key]
+    }
     return obj
   }, {})
 }
