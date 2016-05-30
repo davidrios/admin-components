@@ -1,4 +1,7 @@
+import Immutable from 'immutable'
 import React from 'react'
+import PureRenderMixin from 'react-addons-pure-render-mixin'
+
 import BaseFormInput from './base'
 import { makePropsSubset } from '../utils'
 
@@ -16,6 +19,8 @@ export class BaseTagsInput extends React.Component {
   constructor(props) {
     super(props)
     this.state = { inputValue: props.inputValue }
+
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
   }
 
   componentDidMount() {
@@ -102,7 +107,7 @@ export class BaseTagsInput extends React.Component {
 }
 
 BaseTagsInput.defaultProps = {
-  value: [],
+  value: new Immutable.List(),
   inputValue: '',
   inputPlaceholder: '',
   className: '',
@@ -110,7 +115,7 @@ BaseTagsInput.defaultProps = {
 }
 
 BaseTagsInput.propTypes = {
-  value: React.PropTypes.arrayOf(React.PropTypes.string),
+  value: React.PropTypes.instanceOf(Immutable.List),
   inputValue: React.PropTypes.string,
   inputPlaceholder: React.PropTypes.string,
   allowDuplicates: React.PropTypes.bool,
@@ -126,6 +131,8 @@ export default class TagsInput extends React.Component {
   constructor(props) {
     super(props)
     this.state = { active: false }
+
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
   }
 
   handleTagsInputFocus() {

@@ -22,7 +22,8 @@ var config = {
       'admin-components': 'this admin-components',
       'react': 'var React',
       'react-dom': 'var ReactDOM',
-      'react-router': 'var ReactRouter'
+      'react-router': 'var ReactRouter',
+      'immutable': 'var Immutable'
     }
   ],
   plugins: [

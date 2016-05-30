@@ -20,7 +20,9 @@ var config = {
         commonjs2: 'react',
         commonjs: 'react',
         amd: 'react'
-      }
+      },
+      'react-addons-pure-render-mixin': 'var React.addons.PureRenderMixin',
+      'immutable': 'var Immutable'
     }
   ],
   output: {

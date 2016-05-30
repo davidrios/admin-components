@@ -1,3 +1,4 @@
+import Immutable from 'immutable'
 import React from 'react'
 import { render } from 'react-dom'
 import { Router, Route, Link, browserHistory } from 'react-router'
@@ -72,19 +73,15 @@ class DemoTextInput extends React.Component {
 class StatefulTagsInput extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { value: this.props.value || [] }
+    this.state = { value: this.props.value || new Immutable.List() }
   }
 
   addTag(val) {
-    let newValue = this.state.value.slice()
-    newValue.push(val)
-    this.setState({ value: newValue })
+    this.setState({ value: this.state.value.push(val) })
   }
 
   removeTag(val) {
-    let newValue = this.state.value.slice()
-    newValue.splice(val, 1)
-    this.setState({ value: newValue })
+    this.setState({ value: this.state.value.delete(val) })
   }
 
   render() {
@@ -102,7 +99,7 @@ class DemoTagsInput extends React.Component {
   render() {
     return (
       <BaseFormDemo title="Tags Input">
-        <StatefulTagsInput label="tags input 1" inputPlaceholder="tag name" value={[ 'abc', 'bcd' ]} allowDuplicates={true} />
+        <StatefulTagsInput label="tags input 1" inputPlaceholder="tag name" value={new Immutable.List([ 'abc', 'bcd' ])} allowDuplicates={true} />
         <StatefulTagsInput label="tags input 2" inputPlaceholder="new tag" helpText="no duplicates" allowDuplicates={false} />
       </BaseFormDemo>
     )
