@@ -46,10 +46,6 @@
 
 	'use strict';
 
-	var _assign = __webpack_require__(31);
-
-	var _assign2 = _interopRequireDefault(_assign);
-
 	var _extends2 = __webpack_require__(52);
 
 	var _extends3 = _interopRequireDefault(_extends2);
@@ -74,15 +70,19 @@
 
 	var _inherits3 = _interopRequireDefault(_inherits2);
 
-	var _react = __webpack_require__(92);
+	var _immutable = __webpack_require__(92);
+
+	var _immutable2 = _interopRequireDefault(_immutable);
+
+	var _react = __webpack_require__(93);
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _reactDom = __webpack_require__(93);
+	var _reactDom = __webpack_require__(94);
 
-	var _reactRouter = __webpack_require__(94);
+	var _reactRouter = __webpack_require__(95);
 
-	var _adminComponents = __webpack_require__(95);
+	var _adminComponents = __webpack_require__(96);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -230,23 +230,19 @@
 
 	    var _this5 = (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(StatefulTagsInput).call(this, props));
 
-	    _this5.state = { value: _this5.props.value || [] };
+	    _this5.state = { value: _this5.props.value || new _immutable2.default.List() };
 	    return _this5;
 	  }
 
 	  (0, _createClass3.default)(StatefulTagsInput, [{
 	    key: 'addTag',
 	    value: function addTag(val) {
-	      var newValue = this.state.value.slice();
-	      newValue.push(val);
-	      this.setState({ value: newValue });
+	      this.setState({ value: this.state.value.push(val) });
 	    }
 	  }, {
 	    key: 'removeTag',
 	    value: function removeTag(val) {
-	      var newValue = this.state.value.slice();
-	      newValue.splice(val, 1);
-	      this.setState({ value: newValue });
+	      this.setState({ value: this.state.value.delete(val) });
 	    }
 	  }, {
 	    key: 'render',
@@ -280,7 +276,7 @@
 	      return _react2.default.createElement(
 	        BaseFormDemo,
 	        { title: 'Tags Input' },
-	        _react2.default.createElement(StatefulTagsInput, { label: 'tags input 1', inputPlaceholder: 'tag name', value: ['abc', 'bcd'], allowDuplicates: true }),
+	        _react2.default.createElement(StatefulTagsInput, { label: 'tags input 1', inputPlaceholder: 'tag name', value: new _immutable2.default.List(['abc', 'bcd']), allowDuplicates: true }),
 	        _react2.default.createElement(StatefulTagsInput, { label: 'tags input 2', inputPlaceholder: 'new tag', helpText: 'no duplicates', allowDuplicates: false })
 	      );
 	    }
@@ -296,51 +292,40 @@
 
 	    var _this8 = (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(StatefulModifiersInput).call(this, props));
 
-	    _this8.state = { value: _this8.props.value || [] };
+	    _this8.state = { value: _this8.props.value || new _immutable2.default.List() };
 	    return _this8;
 	  }
 
 	  (0, _createClass3.default)(StatefulModifiersInput, [{
 	    key: 'addModifier',
 	    value: function addModifier() {
-	      var newValue = this.state.value.slice();
-	      newValue.push({ name: '', tags: [] });
-	      this.setState({ value: newValue });
+	      this.setState({ value: this.state.value.push(_immutable2.default.fromJS({ name: '', tags: [] })) });
 	    }
 	  }, {
 	    key: 'removeModifier',
 	    value: function removeModifier(idx) {
-	      var newValue = this.state.value.slice();
-	      newValue.splice(idx, 1);
-	      this.setState({ value: newValue });
-	      this.forceUpdate();
+	      this.setState({ value: this.state.value.delete(idx) });
 	    }
 	  }, {
 	    key: 'updateName',
-	    value: function updateName(val, idx) {
-	      var newValue = this.state.value.slice();
-	      var mod = (0, _assign2.default)({}, newValue[idx]);
-	      mod.name = val;
-	      newValue[idx] = mod;
-	      this.setState({ value: newValue });
+	    value: function updateName(idx, val) {
+	      this.setState({ value: this.state.value.updateIn([idx], function (obj) {
+	          return obj.set('name', val);
+	        }) });
 	    }
 	  }, {
 	    key: 'addTag',
-	    value: function addTag(val, idx) {
-	      var newValue = this.state.value.slice();
-	      var mod = (0, _assign2.default)({}, newValue[idx]);
-	      mod.tags.push(val);
-	      newValue[idx] = mod;
-	      this.setState({ value: newValue });
+	    value: function addTag(idx, val) {
+	      this.setState({ value: this.state.value.updateIn([idx, 'tags'], function (list) {
+	          return list.push(val);
+	        }) });
 	    }
 	  }, {
 	    key: 'removeTag',
-	    value: function removeTag(val, idx) {
-	      var newValue = this.state.value.slice();
-	      var mod = (0, _assign2.default)({}, newValue[idx]);
-	      mod.tags.slice(val, 1);
-	      newValue[idx] = mod;
-	      this.setState({ value: newValue });
+	    value: function removeTag(idx, val) {
+	      this.setState({ value: this.state.value.updateIn([idx, 'tags'], function (list) {
+	          return list.delete(val);
+	        }) });
 	    }
 	  }, {
 	    key: 'render',
@@ -383,7 +368,7 @@
 	      return _react2.default.createElement(
 	        BaseFormDemo,
 	        { title: 'Modifiers Input' },
-	        _react2.default.createElement(StatefulModifiersInput, { value: [{ name: 'lol', tags: ['a', 'b', 'c'] }],
+	        _react2.default.createElement(StatefulModifiersInput, { value: _immutable2.default.fromJS([{ name: 'lol', tags: ['a', 'b', 'c'] }]),
 	          label: 'modifiers input 1',
 	          namePlaceholder: 'name',
 	          valuePlaceholder: 'value',
@@ -2031,22 +2016,28 @@
 /* 92 */
 /***/ function(module, exports) {
 
-	module.exports = React;
+	module.exports = Immutable;
 
 /***/ },
 /* 93 */
 /***/ function(module, exports) {
 
-	module.exports = ReactDOM;
+	module.exports = React;
 
 /***/ },
 /* 94 */
 /***/ function(module, exports) {
 
-	module.exports = ReactRouter;
+	module.exports = ReactDOM;
 
 /***/ },
 /* 95 */
+/***/ function(module, exports) {
+
+	module.exports = ReactRouter;
+
+/***/ },
+/* 96 */
 /***/ function(module, exports) {
 
 	(function() { module.exports = this["admin-components"]; }());
