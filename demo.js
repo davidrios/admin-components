@@ -153,6 +153,15 @@
 	                { to: 'modifiers-input' },
 	                'Modifiers Input'
 	              )
+	            ),
+	            _react2.default.createElement(
+	              'li',
+	              null,
+	              _react2.default.createElement(
+	                _reactRouter.Link,
+	                { to: 'select-input' },
+	                'Select Input'
+	              )
 	            )
 	          )
 	        ),
@@ -384,6 +393,238 @@
 	  return DemoModifiersInput;
 	}(_react2.default.Component);
 
+	var SELECT_TEST_DATA = _immutable2.default.fromJS([{
+	  'id': 0,
+	  'name': 'Barrett Dale'
+	}, {
+	  'id': 1,
+	  'name': 'Marta Sims'
+	}, {
+	  'id': 2,
+	  'name': 'Adrienne Alford'
+	}, {
+	  'id': 3,
+	  'name': 'Patrica Vang'
+	}, {
+	  'id': 4,
+	  'name': 'Odom Cabrera'
+	}, {
+	  'id': 5,
+	  'name': 'Davenport Russell'
+	}, {
+	  'id': 6,
+	  'name': 'Brittney Pittman'
+	}, {
+	  'id': 7,
+	  'name': 'Ashley Dennis'
+	}, {
+	  'id': 8,
+	  'name': 'Louella Vaughan'
+	}, {
+	  'id': 9,
+	  'name': 'Carol Burgess'
+	}, {
+	  'id': 10,
+	  'name': 'Paige House'
+	}, {
+	  'id': 11,
+	  'name': 'Rodriquez Tucker'
+	}, {
+	  'id': 12,
+	  'name': 'Puckett Leblanc'
+	}, {
+	  'id': 13,
+	  'name': 'Frank Roberts'
+	}, {
+	  'id': 14,
+	  'name': 'Leonard Blackburn'
+	}, {
+	  'id': 15,
+	  'name': 'Ashlee Beard'
+	}, {
+	  'id': 16,
+	  'name': 'Grace Randall'
+	}, {
+	  'id': 17,
+	  'name': 'Pat Zimmerman'
+	}, {
+	  'id': 18,
+	  'name': 'Lawanda Schmidt'
+	}, {
+	  'id': 19,
+	  'name': 'Garrett Shelton'
+	}, {
+	  'id': 20,
+	  'name': 'Duffy Walls'
+	}, {
+	  'id': 21,
+	  'name': 'Leona Schneider'
+	}, {
+	  'id': 22,
+	  'name': 'Wyatt Larsen'
+	}, {
+	  'id': 23,
+	  'name': 'Mcknight Hogan'
+	}, {
+	  'id': 24,
+	  'name': 'Peters Cherry'
+	}, {
+	  'id': 25,
+	  'name': 'Marcia Blair'
+	}, {
+	  'id': 26,
+	  'name': 'Lesa Morgan'
+	}, {
+	  'id': 27,
+	  'name': 'Jane Sharp'
+	}, {
+	  'id': 28,
+	  'name': 'Lana Parks'
+	}, {
+	  'id': 29,
+	  'name': 'Mindy Middleton'
+	}, {
+	  'id': 30,
+	  'name': 'Hazel Lee'
+	}, {
+	  'id': 31,
+	  'name': 'Rodgers Lopez'
+	}, {
+	  'id': 32,
+	  'name': 'Leanne Harrington'
+	}, {
+	  'id': 33,
+	  'name': 'Wilson Higgins'
+	}, {
+	  'id': 34,
+	  'name': 'Clemons Berg'
+	}, {
+	  'id': 35,
+	  'name': 'Barrera Carson'
+	}, {
+	  'id': 36,
+	  'name': 'Patrice Kaufman'
+	}, {
+	  'id': 37,
+	  'name': 'West Christensen'
+	}, {
+	  'id': 38,
+	  'name': 'Sheppard Downs'
+	}, {
+	  'id': 39,
+	  'name': 'Henry Gregory'
+	}, {
+	  'id': 40,
+	  'name': 'Darla Wise'
+	}, {
+	  'id': 41,
+	  'name': 'Mariana Wall'
+	}, {
+	  'id': 42,
+	  'name': 'Page Gibbs'
+	}, {
+	  'id': 43,
+	  'name': 'Cristina Miller'
+	}, {
+	  'id': 44,
+	  'name': 'Luella Owen'
+	}, {
+	  'id': 45,
+	  'name': 'Lenore Collier'
+	}, {
+	  'id': 46,
+	  'name': 'Wade Duffy'
+	}, {
+	  'id': 47,
+	  'name': 'Rice Nicholson'
+	}, {
+	  'id': 48,
+	  'name': 'Mccarty Bray'
+	}, {
+	  'id': 49,
+	  'name': 'Hilary Manning'
+	}]);
+
+	var StatefulSearchableSelectInput = function (_React$Component8) {
+	  (0, _inherits3.default)(StatefulSearchableSelectInput, _React$Component8);
+
+	  function StatefulSearchableSelectInput(props) {
+	    (0, _classCallCheck3.default)(this, StatefulSearchableSelectInput);
+
+	    var _this11 = (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(StatefulSearchableSelectInput).call(this, props));
+
+	    _this11.state = {
+	      selectedValue: _this11.props.value || new _immutable2.default.Map({ label: '-- select a value --', value: null }),
+	      searchResults: _this11.props.value || new _immutable2.default.List()
+	    };
+	    return _this11;
+	  }
+
+	  (0, _createClass3.default)(StatefulSearchableSelectInput, [{
+	    key: 'select',
+	    value: function select(val) {
+	      if (val.get('value') != null) {
+	        this.setState({ selectedValue: val, searchValue: '' });
+	      }
+	    }
+	  }, {
+	    key: 'search',
+	    value: function search(val) {
+	      val = val.toLowerCase();
+	      var results = this.props.data.filter(function (item) {
+	        return item.get('name').toLowerCase().indexOf(val) !== -1;
+	      });
+
+	      if (!results.size) {
+	        this.setState({ searchResults: _immutable2.default.fromJS([{ label: '** no matches **', value: null }]) });
+	      } else {
+	        this.setState({ searchResults: results.map(function (item) {
+	            return _immutable2.default.Map({ label: item.get('name'), value: item.get('id') });
+	          }) });
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this12 = this;
+
+	      return _react2.default.createElement(_adminComponents.SearchableSelectInput, (0, _extends3.default)({}, _adminComponents.utils.makePropsSubset(this.props, ['label', 'searchPlaceholder', 'helpText']), {
+	        selectedValue: this.state.selectedValue,
+	        searchResults: this.state.searchResults,
+	        onSelect: function onSelect(val) {
+	          return _this12.select(val);
+	        },
+	        onSearchUpdate: function onSearchUpdate(val) {
+	          return _this12.search(val);
+	        } }));
+	    }
+	  }]);
+	  return StatefulSearchableSelectInput;
+	}(_react2.default.Component);
+
+	var DemoSelectInput = function (_React$Component9) {
+	  (0, _inherits3.default)(DemoSelectInput, _React$Component9);
+
+	  function DemoSelectInput() {
+	    (0, _classCallCheck3.default)(this, DemoSelectInput);
+	    return (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(DemoSelectInput).apply(this, arguments));
+	  }
+
+	  (0, _createClass3.default)(DemoSelectInput, [{
+	    key: 'render',
+	    value: function render() {
+	      return _react2.default.createElement(
+	        BaseFormDemo,
+	        { title: 'Select Input' },
+	        _react2.default.createElement(StatefulSearchableSelectInput, { label: 'searchable select',
+	          searchPlaceholder: 'friend name',
+	          data: SELECT_TEST_DATA })
+	      );
+	    }
+	  }]);
+	  return DemoSelectInput;
+	}(_react2.default.Component);
+
 	(0, _reactDom.render)(_react2.default.createElement(
 	  _reactRouter.Router,
 	  null,
@@ -392,7 +633,8 @@
 	    { path: '/', component: App },
 	    _react2.default.createElement(_reactRouter.Route, { path: 'text-input', component: DemoTextInput }),
 	    _react2.default.createElement(_reactRouter.Route, { path: 'tags-input', component: DemoTagsInput }),
-	    _react2.default.createElement(_reactRouter.Route, { path: 'modifiers-input', component: DemoModifiersInput })
+	    _react2.default.createElement(_reactRouter.Route, { path: 'modifiers-input', component: DemoModifiersInput }),
+	    _react2.default.createElement(_reactRouter.Route, { path: 'select-input', component: DemoSelectInput })
 	  )
 	), document.getElementById('app-container'));
 
@@ -427,7 +669,7 @@
 
 	var global    = __webpack_require__(2)
 	  , core      = __webpack_require__(1)
-	  , ctx       = __webpack_require__(34)
+	  , ctx       = __webpack_require__(33)
 	  , hide      = __webpack_require__(9)
 	  , PROTOTYPE = 'prototype';
 
@@ -501,7 +743,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	var anObject       = __webpack_require__(11)
-	  , IE8_DOM_DEFINE = __webpack_require__(36)
+	  , IE8_DOM_DEFINE = __webpack_require__(35)
 	  , toPrimitive    = __webpack_require__(28)
 	  , dP             = Object.defineProperty;
 
@@ -522,7 +764,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	// to indexed object, toObject with fallback for non-array-like ES3 strings
-	var IObject = __webpack_require__(37)
+	var IObject = __webpack_require__(36)
 	  , defined = __webpack_require__(17);
 	module.exports = function(it){
 	  return IObject(defined(it));
@@ -592,7 +834,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	// 19.1.2.14 / 15.2.3.14 Object.keys(O)
-	var $keys       = __webpack_require__(42)
+	var $keys       = __webpack_require__(41)
 	  , enumBugKeys = __webpack_require__(18);
 
 	module.exports = Object.keys || function keys(O){
@@ -674,7 +916,7 @@
 	// Create object with fake `null` prototype: use iframe Object with cleared prototype
 	var createDict = function(){
 	  // Thrash, waste and sodomy: IE GC bug
-	  var iframe = __webpack_require__(35)('iframe')
+	  var iframe = __webpack_require__(34)('iframe')
 	    , i      = enumBugKeys.length
 	    , gt     = '>'
 	    , iframeDocument;
@@ -805,12 +1047,6 @@
 /* 31 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = { "default": __webpack_require__(55), __esModule: true };
-
-/***/ },
-/* 32 */
-/***/ function(module, exports, __webpack_require__) {
-
 	"use strict";
 
 	exports.__esModule = true;
@@ -834,7 +1070,7 @@
 	};
 
 /***/ },
-/* 33 */
+/* 32 */
 /***/ function(module, exports) {
 
 	var toString = {}.toString;
@@ -844,7 +1080,7 @@
 	};
 
 /***/ },
-/* 34 */
+/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// optional / simple context binding
@@ -869,7 +1105,7 @@
 	};
 
 /***/ },
-/* 35 */
+/* 34 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var isObject = __webpack_require__(12)
@@ -881,37 +1117,37 @@
 	};
 
 /***/ },
-/* 36 */
+/* 35 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = !__webpack_require__(3) && !__webpack_require__(8)(function(){
-	  return Object.defineProperty(__webpack_require__(35)('div'), 'a', {get: function(){ return 7; }}).a != 7;
+	  return Object.defineProperty(__webpack_require__(34)('div'), 'a', {get: function(){ return 7; }}).a != 7;
 	});
 
 /***/ },
-/* 37 */
+/* 36 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// fallback for non-array-like ES3 and non-enumerable old V8 strings
-	var cof = __webpack_require__(33);
+	var cof = __webpack_require__(32);
 	module.exports = Object('z').propertyIsEnumerable(0) ? Object : function(it){
 	  return cof(it) == 'String' ? it.split('') : Object(it);
 	};
 
 /***/ },
-/* 38 */
+/* 37 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	var LIBRARY        = __webpack_require__(20)
 	  , $export        = __webpack_require__(4)
-	  , redefine       = __webpack_require__(43)
+	  , redefine       = __webpack_require__(42)
 	  , hide           = __webpack_require__(9)
 	  , has            = __webpack_require__(5)
 	  , Iterators      = __webpack_require__(19)
 	  , $iterCreate    = __webpack_require__(68)
 	  , setToStringTag = __webpack_require__(23)
-	  , getPrototypeOf = __webpack_require__(41)
+	  , getPrototypeOf = __webpack_require__(40)
 	  , ITERATOR       = __webpack_require__(10)('iterator')
 	  , BUGGY          = !([].keys && 'next' in [].keys()) // Safari has buggy iterators w/o `next`
 	  , FF_ITERATOR    = '@@iterator'
@@ -974,7 +1210,7 @@
 	};
 
 /***/ },
-/* 39 */
+/* 38 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var pIE            = __webpack_require__(14)
@@ -982,7 +1218,7 @@
 	  , toIObject      = __webpack_require__(7)
 	  , toPrimitive    = __webpack_require__(28)
 	  , has            = __webpack_require__(5)
-	  , IE8_DOM_DEFINE = __webpack_require__(36)
+	  , IE8_DOM_DEFINE = __webpack_require__(35)
 	  , gOPD           = Object.getOwnPropertyDescriptor;
 
 	exports.f = __webpack_require__(3) ? gOPD : function getOwnPropertyDescriptor(O, P){
@@ -995,11 +1231,11 @@
 	};
 
 /***/ },
-/* 40 */
+/* 39 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 19.1.2.7 / 15.2.3.4 Object.getOwnPropertyNames(O)
-	var $keys      = __webpack_require__(42)
+	var $keys      = __webpack_require__(41)
 	  , hiddenKeys = __webpack_require__(18).concat('length', 'prototype');
 
 	exports.f = Object.getOwnPropertyNames || function getOwnPropertyNames(O){
@@ -1007,7 +1243,7 @@
 	};
 
 /***/ },
-/* 41 */
+/* 40 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// 19.1.2.9 / 15.2.3.2 Object.getPrototypeOf(O)
@@ -1025,7 +1261,7 @@
 	};
 
 /***/ },
-/* 42 */
+/* 41 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var has          = __webpack_require__(5)
@@ -1047,10 +1283,16 @@
 	};
 
 /***/ },
-/* 43 */
+/* 42 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(9);
+
+/***/ },
+/* 43 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = { "default": __webpack_require__(55), __esModule: true };
 
 /***/ },
 /* 44 */
@@ -1142,7 +1384,7 @@
 
 	exports.__esModule = true;
 
-	var _assign = __webpack_require__(31);
+	var _assign = __webpack_require__(43);
 
 	var _assign2 = _interopRequireDefault(_assign);
 
@@ -1178,7 +1420,7 @@
 
 	var _create2 = _interopRequireDefault(_create);
 
-	var _typeof2 = __webpack_require__(32);
+	var _typeof2 = __webpack_require__(31);
 
 	var _typeof3 = _interopRequireDefault(_typeof2);
 
@@ -1208,7 +1450,7 @@
 
 	exports.__esModule = true;
 
-	var _typeof2 = __webpack_require__(32);
+	var _typeof2 = __webpack_require__(31);
 
 	var _typeof3 = _interopRequireDefault(_typeof2);
 
@@ -1353,7 +1595,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	// 7.2.2 IsArray(argument)
-	var cof = __webpack_require__(33);
+	var cof = __webpack_require__(32);
 	module.exports = Array.isArray || function isArray(arg){
 	  return cof(arg) == 'Array';
 	};
@@ -1467,7 +1709,7 @@
 	  , gOPS     = __webpack_require__(22)
 	  , pIE      = __webpack_require__(14)
 	  , toObject = __webpack_require__(27)
-	  , IObject  = __webpack_require__(37)
+	  , IObject  = __webpack_require__(36)
 	  , $assign  = Object.assign;
 
 	// should work with symbols and should have deterministic property order (V8 bug)
@@ -1519,7 +1761,7 @@
 
 	// fallback for IE11 buggy Object.getOwnPropertyNames with iframe and window
 	var toIObject = __webpack_require__(7)
-	  , gOPN      = __webpack_require__(40).f
+	  , gOPN      = __webpack_require__(39).f
 	  , toString  = {}.toString;
 
 	var windowNames = typeof window == 'object' && window && Object.getOwnPropertyNames
@@ -1569,7 +1811,7 @@
 	  set: Object.setPrototypeOf || ('__proto__' in {} ? // eslint-disable-line
 	    function(test, buggy, set){
 	      try {
-	        set = __webpack_require__(34)(Function.call, __webpack_require__(39).f(Object.prototype, '__proto__').set, 2);
+	        set = __webpack_require__(33)(Function.call, __webpack_require__(38).f(Object.prototype, '__proto__').set, 2);
 	        set(test, []);
 	        buggy = !(test instanceof Array);
 	      } catch(e){ buggy = true; }
@@ -1642,7 +1884,7 @@
 	// 22.1.3.13 Array.prototype.keys()
 	// 22.1.3.29 Array.prototype.values()
 	// 22.1.3.30 Array.prototype[@@iterator]()
-	module.exports = __webpack_require__(38)(Array, 'Array', function(iterated, kind){
+	module.exports = __webpack_require__(37)(Array, 'Array', function(iterated, kind){
 	  this._t = toIObject(iterated); // target
 	  this._i = 0;                   // next index
 	  this._k = kind;                // kind
@@ -1698,7 +1940,7 @@
 
 	// 19.1.2.9 Object.getPrototypeOf(O)
 	var toObject        = __webpack_require__(27)
-	  , $getPrototypeOf = __webpack_require__(41);
+	  , $getPrototypeOf = __webpack_require__(40);
 
 	__webpack_require__(75)('getPrototypeOf', function(){
 	  return function getPrototypeOf(it){
@@ -1728,7 +1970,7 @@
 	var $at  = __webpack_require__(77)(true);
 
 	// 21.1.3.27 String.prototype[@@iterator]()
-	__webpack_require__(38)(String, 'String', function(iterated){
+	__webpack_require__(37)(String, 'String', function(iterated){
 	  this._t = String(iterated); // target
 	  this._i = 0;                // next index
 	// 21.1.5.2.1 %StringIteratorPrototype%.next()
@@ -1752,7 +1994,7 @@
 	  , has            = __webpack_require__(5)
 	  , DESCRIPTORS    = __webpack_require__(3)
 	  , $export        = __webpack_require__(4)
-	  , redefine       = __webpack_require__(43)
+	  , redefine       = __webpack_require__(42)
 	  , META           = __webpack_require__(71).KEY
 	  , $fails         = __webpack_require__(8)
 	  , shared         = __webpack_require__(25)
@@ -1770,7 +2012,7 @@
 	  , createDesc     = __webpack_require__(15)
 	  , _create        = __webpack_require__(21)
 	  , gOPNExt        = __webpack_require__(74)
-	  , $GOPD          = __webpack_require__(39)
+	  , $GOPD          = __webpack_require__(38)
 	  , $DP            = __webpack_require__(6)
 	  , $keys          = __webpack_require__(13)
 	  , gOPD           = $GOPD.f
@@ -1895,7 +2137,7 @@
 
 	  $GOPD.f = $getOwnPropertyDescriptor;
 	  $DP.f   = $defineProperty;
-	  __webpack_require__(40).f = gOPNExt.f = $getOwnPropertyNames;
+	  __webpack_require__(39).f = gOPNExt.f = $getOwnPropertyNames;
 	  __webpack_require__(14).f  = $propertyIsEnumerable;
 	  __webpack_require__(22).f = $getOwnPropertySymbols;
 
