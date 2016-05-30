@@ -17,7 +17,9 @@ export class BaseSearchableSelectInput extends React.Component {
 
   componentDidMount() {
     this.handleDocumentClick = ev => {
-      if (ev.target !== this.mainDivRef && ev.target !== this.searchValueRef.inputRef) {
+      if (ev.target !== this.mainDivRef
+          && ev.target !== this.selectedSpanRef
+          && ev.target !== this.searchValueRef.inputRef) {
         this.setState({ isOpen: false })
       }
     }
@@ -35,7 +37,7 @@ export class BaseSearchableSelectInput extends React.Component {
   }
 
   handleComponentClick(ev) {
-    if (ev.target !== this.mainDivRef) {
+    if (ev.target !== this.mainDivRef && ev.target !== this.selectedSpanRef) {
       return
     }
 
@@ -57,7 +59,7 @@ export class BaseSearchableSelectInput extends React.Component {
       <div ref={el => this.mainDivRef = el}
            className={this.props.className + ' searchable-select' + (this.state.isOpen ? ' open active' : '')}
            onClick={(ev) => this.handleComponentClick(ev)}>
-        <span>{this.props.selectedValue.get('label')}</span>
+        <span ref={el => this.selectedSpanRef = el}>{this.props.selectedValue.get('label')}</span>
         <ul>
           <li><BaseTextInput ref={(component) => this.searchValueRef = component}
                              value={this.state.searchValue}
