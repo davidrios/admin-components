@@ -129,7 +129,9 @@
 	            null,
 	            _react2.default.createElement(
 	              'li',
-	              null,
+	              { onClick: function onClick() {
+	                  return _this2.toggleMenu();
+	                } },
 	              _react2.default.createElement(
 	                _reactRouter.Link,
 	                { to: 'text-input' },
@@ -138,7 +140,9 @@
 	            ),
 	            _react2.default.createElement(
 	              'li',
-	              null,
+	              { onClick: function onClick() {
+	                  return _this2.toggleMenu();
+	                } },
 	              _react2.default.createElement(
 	                _reactRouter.Link,
 	                { to: 'tags-input' },
@@ -147,7 +151,9 @@
 	            ),
 	            _react2.default.createElement(
 	              'li',
-	              null,
+	              { onClick: function onClick() {
+	                  return _this2.toggleMenu();
+	                } },
 	              _react2.default.createElement(
 	                _reactRouter.Link,
 	                { to: 'modifiers-input' },
@@ -156,7 +162,9 @@
 	            ),
 	            _react2.default.createElement(
 	              'li',
-	              null,
+	              { onClick: function onClick() {
+	                  return _this2.toggleMenu();
+	                } },
 	              _react2.default.createElement(
 	                _reactRouter.Link,
 	                { to: 'select-input' },
@@ -209,8 +217,78 @@
 	  return BaseFormDemo;
 	}(_react2.default.Component);
 
-	var DemoTextInput = function (_React$Component3) {
-	  (0, _inherits3.default)(DemoTextInput, _React$Component3);
+	var StatefulAutocompletedTextInput = function (_React$Component3) {
+	  (0, _inherits3.default)(StatefulAutocompletedTextInput, _React$Component3);
+
+	  function StatefulAutocompletedTextInput(props) {
+	    (0, _classCallCheck3.default)(this, StatefulAutocompletedTextInput);
+
+	    var _this4 = (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(StatefulAutocompletedTextInput).call(this, props));
+
+	    _this4.state = {
+	      isOpen: false,
+	      selectedValue: new _immutable2.default.Map({ label: '', value: null }),
+	      searchResults: new _immutable2.default.List()
+	    };
+	    return _this4;
+	  }
+
+	  (0, _createClass3.default)(StatefulAutocompletedTextInput, [{
+	    key: 'select',
+	    value: function select(val) {
+	      if (val.get('value') != null) {
+	        this.setState({ selectedValue: val, searchValue: '', isOpen: false });
+	      }
+	    }
+	  }, {
+	    key: 'search',
+	    value: function search(val) {
+	      val = val.toLowerCase();
+	      var results = this.props.data.filter(function (item) {
+	        return item.get('name').toLowerCase().indexOf(val) !== -1;
+	      });
+
+	      if (!results.size) {
+	        this.setState({ isOpen: false, searchResults: _immutable2.default.fromJS([{ label: '** no matches **', value: null }]) });
+	      } else {
+	        this.setState({ isOpen: true, searchResults: results.map(function (item) {
+	            return _immutable2.default.Map({ label: item.get('name'), value: item.get('id') });
+	          }) });
+	      }
+	    }
+	  }, {
+	    key: 'render',
+	    value: function render() {
+	      var _this5 = this;
+
+	      return _react2.default.createElement(_adminComponents.TextInput, (0, _extends3.default)({}, _adminComponents.utils.makePropsSubset(this.props, ['label', 'placeholder', 'helpText']), {
+	        value: this.state.selectedValue.get('label'),
+	        onUpdate: function onUpdate(val) {
+	          return _this5.search(val);
+	        },
+	        autocomplete: new _immutable2.default.Map({
+	          isOpen: this.state.isOpen,
+	          searchResults: this.state.searchResults,
+	          onOpen: function onOpen() {
+	            return _this5.setState({ isOpen: true });
+	          },
+	          onClose: function onClose() {
+	            return _this5.setState({ isOpen: false });
+	          },
+	          onSelect: function onSelect(val) {
+	            return _this5.select(val);
+	          },
+	          onSearchUpdate: function onSearchUpdate(val) {
+	            return _this5.search(val);
+	          }
+	        }) }));
+	    }
+	  }]);
+	  return StatefulAutocompletedTextInput;
+	}(_react2.default.Component);
+
+	var DemoTextInput = function (_React$Component4) {
+	  (0, _inherits3.default)(DemoTextInput, _React$Component4);
 
 	  function DemoTextInput() {
 	    (0, _classCallCheck3.default)(this, DemoTextInput);
@@ -224,23 +302,27 @@
 	        BaseFormDemo,
 	        { title: 'Text Input' },
 	        _react2.default.createElement(_adminComponents.TextInput, { label: 'input1', placeholder: 'input1', helpText: 'input 1 help text' }),
-	        _react2.default.createElement(_adminComponents.TextInput, { label: 'input2', placeholder: 'input2', helpText: 'text input 2' })
+	        _react2.default.createElement(_adminComponents.TextInput, { label: 'input2', placeholder: 'input2', helpText: 'text input 2' }),
+	        _react2.default.createElement(StatefulAutocompletedTextInput, { label: 'input3',
+	          placeholder: 'input3',
+	          helpText: 'text input with autocompletion',
+	          data: SELECT_TEST_DATA })
 	      );
 	    }
 	  }]);
 	  return DemoTextInput;
 	}(_react2.default.Component);
 
-	var StatefulTagsInput = function (_React$Component4) {
-	  (0, _inherits3.default)(StatefulTagsInput, _React$Component4);
+	var StatefulTagsInput = function (_React$Component5) {
+	  (0, _inherits3.default)(StatefulTagsInput, _React$Component5);
 
 	  function StatefulTagsInput(props) {
 	    (0, _classCallCheck3.default)(this, StatefulTagsInput);
 
-	    var _this5 = (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(StatefulTagsInput).call(this, props));
+	    var _this7 = (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(StatefulTagsInput).call(this, props));
 
-	    _this5.state = { value: _this5.props.value || new _immutable2.default.List() };
-	    return _this5;
+	    _this7.state = { value: _this7.props.value || new _immutable2.default.List() };
+	    return _this7;
 	  }
 
 	  (0, _createClass3.default)(StatefulTagsInput, [{
@@ -256,23 +338,23 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this6 = this;
+	      var _this8 = this;
 
 	      return _react2.default.createElement(_adminComponents.TagsInput, (0, _extends3.default)({}, _adminComponents.utils.makePropsSubset(this.props, ['label', 'value', 'inputPlaceholder', 'allowDuplicates', 'helpText']), {
 	        value: this.state.value,
 	        onAddTag: function onAddTag(val) {
-	          return _this6.addTag(val);
+	          return _this8.addTag(val);
 	        },
 	        onRemoveTag: function onRemoveTag(val) {
-	          return _this6.removeTag(val);
+	          return _this8.removeTag(val);
 	        } }));
 	    }
 	  }]);
 	  return StatefulTagsInput;
 	}(_react2.default.Component);
 
-	var DemoTagsInput = function (_React$Component5) {
-	  (0, _inherits3.default)(DemoTagsInput, _React$Component5);
+	var DemoTagsInput = function (_React$Component6) {
+	  (0, _inherits3.default)(DemoTagsInput, _React$Component6);
 
 	  function DemoTagsInput() {
 	    (0, _classCallCheck3.default)(this, DemoTagsInput);
@@ -293,16 +375,16 @@
 	  return DemoTagsInput;
 	}(_react2.default.Component);
 
-	var StatefulModifiersInput = function (_React$Component6) {
-	  (0, _inherits3.default)(StatefulModifiersInput, _React$Component6);
+	var StatefulModifiersInput = function (_React$Component7) {
+	  (0, _inherits3.default)(StatefulModifiersInput, _React$Component7);
 
 	  function StatefulModifiersInput(props) {
 	    (0, _classCallCheck3.default)(this, StatefulModifiersInput);
 
-	    var _this8 = (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(StatefulModifiersInput).call(this, props));
+	    var _this10 = (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(StatefulModifiersInput).call(this, props));
 
-	    _this8.state = { value: _this8.props.value || new _immutable2.default.List() };
-	    return _this8;
+	    _this10.state = { value: _this10.props.value || new _immutable2.default.List() };
+	    return _this10;
 	  }
 
 	  (0, _createClass3.default)(StatefulModifiersInput, [{
@@ -339,32 +421,32 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this9 = this;
+	      var _this11 = this;
 
 	      return _react2.default.createElement(_adminComponents.ModifiersInput, (0, _extends3.default)({}, _adminComponents.utils.makePropsSubset(this.props, ['label', 'value', 'namePlaceholder', 'valuePlaceholder', 'allowTagDuplicates', 'helpText']), {
 	        value: this.state.value,
 	        onClickAdd: function onClickAdd() {
-	          return _this9.addModifier();
+	          return _this11.addModifier();
 	        },
 	        onClickRemove: function onClickRemove(idx) {
-	          return _this9.removeModifier(idx);
+	          return _this11.removeModifier(idx);
 	        },
 	        onNameUpdate: function onNameUpdate(val, idx) {
-	          return _this9.updateName(val, idx);
+	          return _this11.updateName(val, idx);
 	        },
 	        onAddTag: function onAddTag(val, idx) {
-	          return _this9.addTag(val, idx);
+	          return _this11.addTag(val, idx);
 	        },
 	        onRemoveTag: function onRemoveTag(val, idx) {
-	          return _this9.removeTag(val, idx);
+	          return _this11.removeTag(val, idx);
 	        } }));
 	    }
 	  }]);
 	  return StatefulModifiersInput;
 	}(_react2.default.Component);
 
-	var DemoModifiersInput = function (_React$Component7) {
-	  (0, _inherits3.default)(DemoModifiersInput, _React$Component7);
+	var DemoModifiersInput = function (_React$Component8) {
+	  (0, _inherits3.default)(DemoModifiersInput, _React$Component8);
 
 	  function DemoModifiersInput() {
 	    (0, _classCallCheck3.default)(this, DemoModifiersInput);
@@ -545,19 +627,19 @@
 	  'name': 'Hilary Manning'
 	}]);
 
-	var StatefulSearchableSelectInput = function (_React$Component8) {
-	  (0, _inherits3.default)(StatefulSearchableSelectInput, _React$Component8);
+	var StatefulSearchableSelectInput = function (_React$Component9) {
+	  (0, _inherits3.default)(StatefulSearchableSelectInput, _React$Component9);
 
 	  function StatefulSearchableSelectInput(props) {
 	    (0, _classCallCheck3.default)(this, StatefulSearchableSelectInput);
 
-	    var _this11 = (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(StatefulSearchableSelectInput).call(this, props));
+	    var _this13 = (0, _possibleConstructorReturn3.default)(this, (0, _getPrototypeOf2.default)(StatefulSearchableSelectInput).call(this, props));
 
-	    _this11.state = {
-	      selectedValue: _this11.props.value || new _immutable2.default.Map({ label: '-- select a value --', value: null }),
-	      searchResults: _this11.props.value || new _immutable2.default.List()
+	    _this13.state = {
+	      selectedValue: _this13.props.value || new _immutable2.default.Map({ label: '-- select a value --', value: null }),
+	      searchResults: _this13.props.value || new _immutable2.default.List()
 	    };
-	    return _this11;
+	    return _this13;
 	  }
 
 	  (0, _createClass3.default)(StatefulSearchableSelectInput, [{
@@ -586,24 +668,24 @@
 	  }, {
 	    key: 'render',
 	    value: function render() {
-	      var _this12 = this;
+	      var _this14 = this;
 
 	      return _react2.default.createElement(_adminComponents.SearchableSelectInput, (0, _extends3.default)({}, _adminComponents.utils.makePropsSubset(this.props, ['label', 'searchPlaceholder', 'helpText']), {
 	        selectedValue: this.state.selectedValue,
 	        searchResults: this.state.searchResults,
 	        onSelect: function onSelect(val) {
-	          return _this12.select(val);
+	          return _this14.select(val);
 	        },
 	        onSearchUpdate: function onSearchUpdate(val) {
-	          return _this12.search(val);
+	          return _this14.search(val);
 	        } }));
 	    }
 	  }]);
 	  return StatefulSearchableSelectInput;
 	}(_react2.default.Component);
 
-	var DemoSelectInput = function (_React$Component9) {
-	  (0, _inherits3.default)(DemoSelectInput, _React$Component9);
+	var DemoSelectInput = function (_React$Component10) {
+	  (0, _inherits3.default)(DemoSelectInput, _React$Component10);
 
 	  function DemoSelectInput() {
 	    (0, _classCallCheck3.default)(this, DemoSelectInput);
@@ -642,7 +724,7 @@
 /* 1 */
 /***/ function(module, exports) {
 
-	var core = module.exports = {version: '2.4.0'};
+	var core = module.exports = {version: '2.3.0'};
 	if(typeof __e == 'number')__e = core; // eslint-disable-line no-undef
 
 /***/ },
@@ -2027,7 +2109,6 @@
 	  , isEnum         = {}.propertyIsEnumerable
 	  , SymbolRegistry = shared('symbol-registry')
 	  , AllSymbols     = shared('symbols')
-	  , OPSymbols      = shared('op-symbols')
 	  , ObjectProto    = Object[PROTOTYPE]
 	  , USE_NATIVE     = typeof $Symbol == 'function'
 	  , QObject        = global.QObject;
@@ -2059,7 +2140,6 @@
 	};
 
 	var $defineProperty = function defineProperty(it, key, D){
-	  if(it === ObjectProto)$defineProperty(OPSymbols, key, D);
 	  anObject(it);
 	  key = toPrimitive(key, true);
 	  anObject(D);
@@ -2087,14 +2167,10 @@
 	};
 	var $propertyIsEnumerable = function propertyIsEnumerable(key){
 	  var E = isEnum.call(this, key = toPrimitive(key, true));
-	  if(this === ObjectProto && has(AllSymbols, key) && !has(OPSymbols, key))return false;
 	  return E || !has(this, key) || !has(AllSymbols, key) || has(this, HIDDEN) && this[HIDDEN][key] ? E : true;
 	};
 	var $getOwnPropertyDescriptor = function getOwnPropertyDescriptor(it, key){
-	  it  = toIObject(it);
-	  key = toPrimitive(key, true);
-	  if(it === ObjectProto && has(AllSymbols, key) && !has(OPSymbols, key))return;
-	  var D = gOPD(it, key);
+	  var D = gOPD(it = toIObject(it), key = toPrimitive(key, true));
 	  if(D && has(AllSymbols, key) && !(has(it, HIDDEN) && it[HIDDEN][key]))D.enumerable = true;
 	  return D;
 	};
@@ -2103,19 +2179,16 @@
 	    , result = []
 	    , i      = 0
 	    , key;
-	  while(names.length > i){
-	    if(!has(AllSymbols, key = names[i++]) && key != HIDDEN && key != META)result.push(key);
-	  } return result;
+	  while(names.length > i)if(!has(AllSymbols, key = names[i++]) && key != HIDDEN && key != META)result.push(key);
+	  return result;
 	};
 	var $getOwnPropertySymbols = function getOwnPropertySymbols(it){
-	  var IS_OP  = it === ObjectProto
-	    , names  = gOPN(IS_OP ? OPSymbols : toIObject(it))
+	  var names  = gOPN(toIObject(it))
 	    , result = []
 	    , i      = 0
 	    , key;
-	  while(names.length > i){
-	    if(has(AllSymbols, key = names[i++]) && (IS_OP ? has(ObjectProto, key) : true))result.push(AllSymbols[key]);
-	  } return result;
+	  while(names.length > i)if(has(AllSymbols, key = names[i++]))result.push(AllSymbols[key]);
+	  return result;
 	};
 
 	// 19.4.1.1 Symbol([description])
@@ -2123,12 +2196,13 @@
 	  $Symbol = function Symbol(){
 	    if(this instanceof $Symbol)throw TypeError('Symbol is not a constructor!');
 	    var tag = uid(arguments.length > 0 ? arguments[0] : undefined);
-	    var $set = function(value){
-	      if(this === ObjectProto)$set.call(OPSymbols, value);
-	      if(has(this, HIDDEN) && has(this[HIDDEN], tag))this[HIDDEN][tag] = false;
-	      setSymbolDesc(this, tag, createDesc(1, value));
-	    };
-	    if(DESCRIPTORS && setter)setSymbolDesc(ObjectProto, tag, {configurable: true, set: $set});
+	    DESCRIPTORS && setter && setSymbolDesc(ObjectProto, tag, {
+	      configurable: true,
+	      set: function(value){
+	        if(has(this, HIDDEN) && has(this[HIDDEN], tag))this[HIDDEN][tag] = false;
+	        setSymbolDesc(this, tag, createDesc(1, value));
+	      }
+	    });
 	    return wrap(tag);
 	  };
 	  redefine($Symbol[PROTOTYPE], 'toString', function toString(){
