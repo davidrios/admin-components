@@ -5,6 +5,7 @@ import { Router, Route, Link, browserHistory } from 'react-router'
 import { TextInput,
          TagsInput,
          ModifiersInput,
+         SearchableSelectInput,
          utils } from 'admin-components'
 
 
@@ -30,6 +31,7 @@ class App extends React.Component {
             <li><Link to="text-input">Text Input</Link></li>
             <li><Link to="tags-input">Tags Input</Link></li>
             <li><Link to="modifiers-input">Modifiers Input</Link></li>
+            <li><Link to="select-input">Select Input</Link></li>
           </ul>
         </nav>
 
@@ -166,6 +168,258 @@ class DemoModifiersInput extends React.Component {
   }
 }
 
+const SELECT_TEST_DATA = Immutable.fromJS([
+  {
+    'id': 0,
+    'name': 'Barrett Dale'
+  },
+  {
+    'id': 1,
+    'name': 'Marta Sims'
+  },
+  {
+    'id': 2,
+    'name': 'Adrienne Alford'
+  },
+  {
+    'id': 3,
+    'name': 'Patrica Vang'
+  },
+  {
+    'id': 4,
+    'name': 'Odom Cabrera'
+  },
+  {
+    'id': 5,
+    'name': 'Davenport Russell'
+  },
+  {
+    'id': 6,
+    'name': 'Brittney Pittman'
+  },
+  {
+    'id': 7,
+    'name': 'Ashley Dennis'
+  },
+  {
+    'id': 8,
+    'name': 'Louella Vaughan'
+  },
+  {
+    'id': 9,
+    'name': 'Carol Burgess'
+  },
+  {
+    'id': 10,
+    'name': 'Paige House'
+  },
+  {
+    'id': 11,
+    'name': 'Rodriquez Tucker'
+  },
+  {
+    'id': 12,
+    'name': 'Puckett Leblanc'
+  },
+  {
+    'id': 13,
+    'name': 'Frank Roberts'
+  },
+  {
+    'id': 14,
+    'name': 'Leonard Blackburn'
+  },
+  {
+    'id': 15,
+    'name': 'Ashlee Beard'
+  },
+  {
+    'id': 16,
+    'name': 'Grace Randall'
+  },
+  {
+    'id': 17,
+    'name': 'Pat Zimmerman'
+  },
+  {
+    'id': 18,
+    'name': 'Lawanda Schmidt'
+  },
+  {
+    'id': 19,
+    'name': 'Garrett Shelton'
+  },
+  {
+    'id': 20,
+    'name': 'Duffy Walls'
+  },
+  {
+    'id': 21,
+    'name': 'Leona Schneider'
+  },
+  {
+    'id': 22,
+    'name': 'Wyatt Larsen'
+  },
+  {
+    'id': 23,
+    'name': 'Mcknight Hogan'
+  },
+  {
+    'id': 24,
+    'name': 'Peters Cherry'
+  },
+  {
+    'id': 25,
+    'name': 'Marcia Blair'
+  },
+  {
+    'id': 26,
+    'name': 'Lesa Morgan'
+  },
+  {
+    'id': 27,
+    'name': 'Jane Sharp'
+  },
+  {
+    'id': 28,
+    'name': 'Lana Parks'
+  },
+  {
+    'id': 29,
+    'name': 'Mindy Middleton'
+  },
+  {
+    'id': 30,
+    'name': 'Hazel Lee'
+  },
+  {
+    'id': 31,
+    'name': 'Rodgers Lopez'
+  },
+  {
+    'id': 32,
+    'name': 'Leanne Harrington'
+  },
+  {
+    'id': 33,
+    'name': 'Wilson Higgins'
+  },
+  {
+    'id': 34,
+    'name': 'Clemons Berg'
+  },
+  {
+    'id': 35,
+    'name': 'Barrera Carson'
+  },
+  {
+    'id': 36,
+    'name': 'Patrice Kaufman'
+  },
+  {
+    'id': 37,
+    'name': 'West Christensen'
+  },
+  {
+    'id': 38,
+    'name': 'Sheppard Downs'
+  },
+  {
+    'id': 39,
+    'name': 'Henry Gregory'
+  },
+  {
+    'id': 40,
+    'name': 'Darla Wise'
+  },
+  {
+    'id': 41,
+    'name': 'Mariana Wall'
+  },
+  {
+    'id': 42,
+    'name': 'Page Gibbs'
+  },
+  {
+    'id': 43,
+    'name': 'Cristina Miller'
+  },
+  {
+    'id': 44,
+    'name': 'Luella Owen'
+  },
+  {
+    'id': 45,
+    'name': 'Lenore Collier'
+  },
+  {
+    'id': 46,
+    'name': 'Wade Duffy'
+  },
+  {
+    'id': 47,
+    'name': 'Rice Nicholson'
+  },
+  {
+    'id': 48,
+    'name': 'Mccarty Bray'
+  },
+  {
+    'id': 49,
+    'name': 'Hilary Manning'
+  }
+])
+
+class StatefulSearchableSelectInput extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      selectedValue: this.props.value || new Immutable.Map({ label: '-- select a value --', value: null }),
+      searchResults: this.props.value || new Immutable.List()
+    }
+  }
+
+  select(val) {
+    if (val.get('value') != null) {
+      this.setState({ selectedValue: val, searchValue: '' })
+    }
+  }
+
+  search(val) {
+    val = val.toLowerCase()
+    let results = this.props.data.filter((item) => item.get('name').toLowerCase().indexOf(val) !== -1)
+
+    if (!results.size) {
+      this.setState({ searchResults: Immutable.fromJS([ { label: '** no matches **', value: null } ]) })
+    } else {
+      this.setState({ searchResults: results.map(item => Immutable.Map({ label: item.get('name'), value: item.get('id') })) })
+    }
+  }
+
+  render() {
+    return (
+      <SearchableSelectInput {...utils.makePropsSubset(this.props, [ 'label', 'searchPlaceholder', 'helpText' ])}
+                             selectedValue={this.state.selectedValue}
+                             searchResults={this.state.searchResults}
+                             onSelect={(val) => this.select(val)}
+                             onSearchUpdate={(val) => this.search(val)} />
+    )
+  }
+}
+
+class DemoSelectInput extends React.Component {
+  render() {
+    return (
+      <BaseFormDemo title="Select Input">
+        <StatefulSearchableSelectInput label="searchable select"
+                                       searchPlaceholder="friend name"
+                                       data={SELECT_TEST_DATA} />
+      </BaseFormDemo>
+    )
+  }
+}
+
 
 render((
   <Router>
@@ -173,6 +427,7 @@ render((
       <Route path="text-input" component={DemoTextInput}/>
       <Route path="tags-input" component={DemoTagsInput}/>
       <Route path="modifiers-input" component={DemoModifiersInput}/>
+      <Route path="select-input" component={DemoSelectInput}/>
     </Route>
   </Router>
 ), document.getElementById('app-container'))
