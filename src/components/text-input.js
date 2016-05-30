@@ -1,4 +1,6 @@
 import React from 'react'
+import PureRenderMixin from 'react-addons-pure-render-mixin'
+
 import BaseFormInput from './base'
 import { makePropsSubset } from '../utils'
 
@@ -10,11 +12,19 @@ export class BaseTextInput extends React.Component {
       value: props.value,
       updateTimeout: null
     }
+
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
   }
 
   componentWillUnmount() {
     if (this.state.updateTimeout != null) {
       clearTimeout(this.state.updateTimeout)
+    }
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.value !== this.props.value) {
+      this.setState({ value: nextProps.value })
     }
   }
 
@@ -94,6 +104,11 @@ BaseTextInput.propTypes = {
 
 
 export default class TextInput extends React.Component {
+  constructor(props) {
+    super(props)
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
+  }
+
   render() {
     return (
       <BaseFormInput {...makePropsSubset(this.props, BaseFormInput.propTypes)}>
