@@ -28,10 +28,10 @@ class App extends React.Component {
           <a className="fa fa-angle-left hidden-lg-up pull-right" onClick={() => this.toggleMenu()}></a>
           <h2>Menu</h2>
           <ul>
-            <li><Link to="text-input">Text Input</Link></li>
-            <li><Link to="tags-input">Tags Input</Link></li>
-            <li><Link to="modifiers-input">Modifiers Input</Link></li>
-            <li><Link to="select-input">Select Input</Link></li>
+            <li onClick={() => this.toggleMenu()}><Link to="text-input">Text Input</Link></li>
+            <li onClick={() => this.toggleMenu()}><Link to="tags-input">Tags Input</Link></li>
+            <li onClick={() => this.toggleMenu()}><Link to="modifiers-input">Modifiers Input</Link></li>
+            <li onClick={() => this.toggleMenu()}><Link to="select-input">Select Input</Link></li>
           </ul>
         </nav>
 
@@ -60,12 +60,61 @@ class BaseFormDemo extends React.Component {
 }
 
 
+class StatefulAutocompletedTextInput extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      isOpen: false,
+      selectedValue: new Immutable.Map({ label: '', value: null }),
+      searchResults: new Immutable.List()
+    }
+  }
+
+  select(val) {
+    if (val.get('value') != null) {
+      this.setState({ selectedValue: val, searchValue: '', isOpen: false })
+    }
+  }
+
+  search(val) {
+    val = val.toLowerCase()
+    let results = this.props.data.filter((item) => item.get('name').toLowerCase().indexOf(val) !== -1)
+
+    if (!results.size) {
+      this.setState({ isOpen: false, searchResults: Immutable.fromJS([ { label: '** no matches **', value: null } ]) })
+    } else {
+      this.setState({ isOpen: true, searchResults: results.map(item => Immutable.Map({ label: item.get('name'), value: item.get('id') })) })
+    }
+  }
+
+  render() {
+    return (
+      <TextInput {...utils.makePropsSubset(this.props, [ 'label', 'placeholder', 'helpText' ])}
+                 value={this.state.selectedValue.get('label')}
+                 onUpdate={val => this.search(val)}
+                 autocomplete={new Immutable.Map({
+                   isOpen: this.state.isOpen,
+                   searchResults: this.state.searchResults,
+                   onOpen: () => this.setState({ isOpen: true }),
+                   onClose: () => this.setState({ isOpen: false }),
+                   onSelect: (val) => this.select(val),
+                   onSearchUpdate: (val) => this.search(val)
+                 })} />
+    )
+  }
+}
+
+
 class DemoTextInput extends React.Component {
   render() {
     return (
       <BaseFormDemo title="Text Input">
         <TextInput label="input1" placeholder="input1" helpText="input 1 help text" />
         <TextInput label="input2" placeholder="input2" helpText="text input 2" />
+        <StatefulAutocompletedTextInput label="input3"
+                                        placeholder="input3"
+                                        helpText="text input with autocompletion"
+                                        data={SELECT_TEST_DATA} />
       </BaseFormDemo>
     )
   }

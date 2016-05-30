@@ -1,6 +1,8 @@
+import Immutable from 'immutable'
 import React from 'react'
 import PureRenderMixin from 'react-addons-pure-render-mixin'
 
+import Autocompleted from './autocompleted'
 import BaseFormInput from './base'
 import { makePropsSubset } from '../utils'
 
@@ -99,20 +101,39 @@ BaseTextInput.propTypes = {
   placeholder: React.PropTypes.string,
   updateDelay: React.PropTypes.number,
   onUpdate: React.PropTypes.func,
-  onUpdateInstant: React.PropTypes.func
+  onUpdateInstant: React.PropTypes.func,
+  onFocus: React.PropTypes.func,
+  onBlur: React.PropTypes.func
+}
+
+
+export class AutocompletedBaseTextInput extends React.Component {
+  render() {
+    return (
+      <Autocompleted {...this.props.autocomplete.toObject()}>
+        <BaseTextInput {...makePropsSubset(this.props, BaseTextInput.propTypes)} />
+      </Autocompleted>
+    )
+  }
+}
+
+AutocompletedBaseTextInput.defaultProps = {
+  autocomplete: new Immutable.Map()
+}
+
+AutocompletedBaseTextInput.propTypes = {
+  autocomplete: React.PropTypes.instanceOf(Immutable.Map)
 }
 
 
 export default class TextInput extends React.Component {
-  constructor(props) {
-    super(props)
-    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
-  }
-
   render() {
+    let InputClass = this.props.autocomplete != null ? AutocompletedBaseTextInput : BaseTextInput
+
     return (
       <BaseFormInput {...makePropsSubset(this.props, BaseFormInput.propTypes)}>
-        <BaseTextInput {...makePropsSubset(this.props, [ 'value', 'placeholder', 'updateDelay', 'onUpdate' ])} />
+        <InputClass {...makePropsSubset(this.props, BaseTextInput.propTypes)}
+                    autocomplete={this.props.autocomplete} />
       </BaseFormInput>
     )
   }
