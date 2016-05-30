@@ -1,4 +1,7 @@
+import Immutable from 'immutable'
 import React from 'react'
+import PureRenderMixin from 'react-addons-pure-render-mixin'
+
 import BaseFormInput from './base'
 import { BaseTagsInput } from './tags-input'
 import { BaseTextInput } from './text-input'
@@ -9,6 +12,8 @@ export class BaseModifiersInputItem extends React.Component {
   constructor(props) {
     super(props)
     this.state = { active: false }
+
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
   }
 
   handleChildFocus() {
@@ -22,8 +27,7 @@ export class BaseModifiersInputItem extends React.Component {
   render() {
     return (
       <li className={(this.state.active ? ' active' : '')}>
-        <BaseTextInput ref={component => this.nameInputRef = component}
-                       value={this.props.value.name}
+        <BaseTextInput value={this.props.value.get('name')}
                        placeholder={this.props.namePlaceholder}
                        onFocus={ev => this.handleChildFocus(ev)}
                        onBlur={ev => this.handleChildBlur(ev)}
@@ -31,29 +35,25 @@ export class BaseModifiersInputItem extends React.Component {
 
         {this.props.canBeRemoved ? <i className="fa fa-close" onClick={ev => this.props.onClickRemove(ev)}></i> : null}
 
-        <BaseTagsInput ref={component => this.tagsInputRef = component}
-                       value={this.props.value.tags}
+        <BaseTagsInput {...makePropsSubset(this.props, [ 'onAddTag', 'onRemoveTag', 'allowDuplicates' ])}
+                       value={this.props.value.get('tags')}
                        inputPlaceholder={this.props.valuePlaceholder}
                        onFocus={ev => this.handleChildFocus(ev)}
-                       onBlur={ev => this.handleChildBlur(ev)}
-                       {...makePropsSubset(this.props, [ 'onAddTag', 'onRemoveTag', 'allowDuplicates' ])} />
+                       onBlur={ev => this.handleChildBlur(ev)} />
       </li>
     )
   }
 }
 
 BaseModifiersInputItem.defaultProps = {
-  value: {},
+  value: new Immutable.Map(),
   namePlaceholder: '',
   valuePlaceholder: '',
   canBeRemoved: true
 }
 
 BaseModifiersInputItem.propTypes = {
-  value: React.PropTypes.shape({
-    name: BaseTextInput.propTypes.value,
-    tags: BaseTagsInput.propTypes.value
-  }),
+  value: React.PropTypes.instanceOf(Immutable.Map),
   namePlaceholder: BaseTextInput.propTypes.placeholder,
   valuePlaceholder: BaseTagsInput.propTypes.inputPlaceholder,
   canBeRemoved: React.PropTypes.bool,
@@ -63,6 +63,11 @@ BaseModifiersInputItem.propTypes = {
 
 
 export class BaseModifiersInput extends React.Component {
+  constructor(props) {
+    super(props)
+    this.shouldComponentUpdate = PureRenderMixin.shouldComponentUpdate.bind(this)
+  }
+
   handleClickAdd(ev) {
     ev.preventDefault()
     this.props.onClickAdd(ev)
@@ -72,11 +77,11 @@ export class BaseModifiersInput extends React.Component {
     let modifiers = this.props.value.map((value, index) =>
       <BaseModifiersInputItem {...makePropsSubset(this.props, [ 'namePlaceholder', 'valuePlaceholder' ])}
                               key={index}
-                              value={this.props.value[index]}
+                              value={value}
                               allowDuplicates={this.props.allowTagDuplicates}
-                              onNameUpdate={(val) => this.props.onNameUpdate(val, index)}
-                              onAddTag={(val) => this.props.onAddTag(val, index)}
-                              onRemoveTag={(val) => this.props.onRemoveTag(val, index)}
+                              onNameUpdate={(val) => this.props.onNameUpdate(index, val)}
+                              onAddTag={(val) => this.props.onAddTag(index, val)}
+                              onRemoveTag={(val) => this.props.onRemoveTag(index, val)}
                               onClickRemove={() => this.props.onClickRemove(index)} />)
 
     return (
@@ -89,12 +94,12 @@ export class BaseModifiersInput extends React.Component {
 }
 
 BaseModifiersInput.defaultProps = {
-  value: [],
+  value: new Immutable.List(),
   allowTagDuplicates: false
 }
 
 BaseModifiersInput.propTypes = {
-  value: React.PropTypes.array,
+  value: React.PropTypes.instanceOf(Immutable.List),
   allowTagDuplicates: React.PropTypes.bool,
   onNameUpdate: React.PropTypes.func.isRequired,
   onAddTag: React.PropTypes.func.isRequired,

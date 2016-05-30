@@ -109,44 +109,27 @@ class DemoTagsInput extends React.Component {
 class StatefulModifiersInput extends React.Component {
   constructor(props) {
     super(props)
-    this.state = { value: this.props.value || [] }
+    this.state = { value: this.props.value || new Immutable.List() }
   }
 
   addModifier() {
-    let newValue = this.state.value.slice()
-    newValue.push({ name: '', tags: [] })
-    this.setState({ value: newValue })
+    this.setState({ value: this.state.value.push(Immutable.fromJS({ name: '', tags: [] })) })
   }
 
   removeModifier(idx) {
-    let newValue = this.state.value.slice()
-    newValue.splice(idx, 1)
-    this.setState({ value: newValue })
-    this.forceUpdate()
+    this.setState({ value: this.state.value.delete(idx) })
   }
 
-  updateName(val, idx) {
-    let newValue = this.state.value.slice()
-    let mod = Object.assign({}, newValue[idx])
-    mod.name = val
-    newValue[idx] = mod
-    this.setState({ value: newValue })
+  updateName(idx, val) {
+    this.setState({ value: this.state.value.updateIn([ idx ], obj => obj.set('name', val)) })
   }
 
-  addTag(val, idx) {
-    let newValue = this.state.value.slice()
-    let mod = Object.assign({}, newValue[idx])
-    mod.tags.push(val)
-    newValue[idx] = mod
-    this.setState({ value: newValue })
+  addTag(idx, val) {
+    this.setState({ value: this.state.value.updateIn([ idx, 'tags' ], list => list.push(val)) })
   }
 
-  removeTag(val, idx) {
-    let newValue = this.state.value.slice()
-    let mod = Object.assign({}, newValue[idx])
-    mod.tags.slice(val, 1)
-    newValue[idx] = mod
-    this.setState({ value: newValue })
+  removeTag(idx, val) {
+    this.setState({ value: this.state.value.updateIn([ idx, 'tags' ], list => list.delete(val)) })
   }
 
   render() {
@@ -167,7 +150,7 @@ class DemoModifiersInput extends React.Component {
   render() {
     return (
       <BaseFormDemo title="Modifiers Input">
-        <StatefulModifiersInput value={[ { name: 'lol', tags: [ 'a', 'b', 'c' ] } ]}
+        <StatefulModifiersInput value={Immutable.fromJS([ { name: 'lol', tags: [ 'a', 'b', 'c' ] } ])}
                                 label="modifiers input 1"
                                 namePlaceholder="name"
                                 valuePlaceholder="value"
